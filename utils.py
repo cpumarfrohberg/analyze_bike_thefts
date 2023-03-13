@@ -2,8 +2,8 @@ import pandas as pd
 import seaborn as sns
 #import pytest
 
-PATH = '../data/Fahrraddiebstahl.csv' 
-PATH_SAVEABLE = '../data'
+PATH = './data/Fahrraddiebstahl.csv' 
+PATH_SAVEABLE = './data'
 
 class BikeThefts():
     '''Read, inspect and transform initial data.'''
@@ -17,9 +17,9 @@ class BikeThefts():
         df = pd.read_csv(self.path, index_col=0, parse_dates=True, encoding = 'unicode_escape')
         return df
 
-    def read_extracted_data(self) -> pd.DataFrame:
+    def read_extracted_data(self, file) -> pd.DataFrame:
         '''Return DataFrame extracted from initial data.'''
-        df = pd.read_csv(self.path_saveable, encoding = 'unicode_escape')
+        df = pd.read_csv(f'{self.path_saveable}/{file}', encoding = 'unicode_escape')
         return df
     
     def check_unique(self, serie) -> pd.Series:

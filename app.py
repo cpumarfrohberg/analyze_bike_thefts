@@ -10,7 +10,7 @@ INDEX = [0]
 bike_thefts = BikeThefts()
 
 df_initial = bike_thefts.read_initial_data()
-df = bike_thefts.read_extracted_data()
+df = bike_thefts.read_extracted_data('bike_thefts_LOR.csv')
 
 st.title('Bike Thefts in Berlin')
 
@@ -34,7 +34,7 @@ if nav == "EDA":
             min_value = 2022, 
             max_value = 2023
             )
-        bike_theft_series = df["Client_Churn"]
+        bike_theft_series = df["bike_theft_count"]
         bike_theft_series = bike_theft_series[bike_theft_series.index.year >= val]
         st.line_chart(bike_theft_series)
 
