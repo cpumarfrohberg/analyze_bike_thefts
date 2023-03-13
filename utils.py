@@ -9,11 +9,7 @@ PATH_EXTRACTED = './data'
 class BikeThefts():
     '''Read, inspect and transform initial data.'''
 
-    def __init__(
-            self, 
-            path = PATH_INITIAL,
-            path_saveable = PATH_SAVEABLE,
-            path_extracted = PATH_EXTRACTED) -> None:
+    def __init__(self, path = PATH_INITIAL, path_saveable = PATH_SAVEABLE, path_extracted = PATH_EXTRACTED) -> None:
         self.path = path
         self.path_saveable = path_saveable
         self.path_extracted = path_extracted
@@ -44,25 +40,25 @@ class BikeThefts():
             df[col] = pd.to_datetime(df[col])
         return df
 
-    def crime_duration_days(self, df, start, end) -> pd.DataFrame:
+    def crime_duration_days(self, df, start, end) -> pd.DataFrame: #use for plotting?
         '''Calculate duration of crime in days.'''
         df['crime_duration_days'] = end - start
         return df
     
-    def crime_duration_hours(self, df, start, end) -> pd.DataFrame:
+    def crime_duration_hours(self, df, start, end) -> pd.DataFrame: #use for plotting?
         '''Calculate duration of crime in hours.'''
         df['crime_duration_hours'] = abs(start - end)
         return df
     
-    def plot_categoricals(self, df) -> sns:
+    def plot_categoricals(self, df, ordinate) -> sns:
         return sns.catplot(
-        data=df, y='ART_DES_FAHRRADS', kind="count",
+        data=df, y=ordinate, kind="count",
         palette="pastel", edgecolor=".6",
     )
 
-    def save_data(self, df, group_by, col_names):
+    def save_data(self, df, group_by, col_names, file):
         '''Save extracted data locally as csv-file.'''
         bike_thefts_LOR = pd.DataFrame(df.groupby(group_by).size(),
                         columns = [col_names]).reset_index()
-        return bike_thefts_LOR.to_csv(f'{self.path_saveable}/bike_thefts_LOR.csv')
+        return bike_thefts_LOR.to_csv(f'{self.path_saveable}/{file}.csv')
 
