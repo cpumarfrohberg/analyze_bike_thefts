@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 import streamlit as st
 
@@ -10,7 +12,7 @@ INDEX = [0]
 bike_thefts = BikeThefts()
 
 df_initial = bike_thefts.read_initial_data()
-df = bike_thefts.read_extracted_data('bike_thefts_LOR.csv')
+df = bike_thefts.read_extracted_data('bike_thefts_LOR_year.csv')
 
 st.title('Bike Thefts in Berlin')
 
@@ -28,15 +30,23 @@ if nav == "Home":
   
 if nav == "EDA":
     st.write("Welcome to the section on Exploratory Data Analysis.")
-    if st.checkbox("Click here to see the time series of bike thefts."):
+    if st.checkbox("<- Click here to see the time series of bike thefts."):
         val = st.slider(
             "Filter data using years", 
             min_value = 2022, 
             max_value = 2023
             )
         bike_theft_series = df["bike_theft_count"]
-        bike_theft_series = bike_theft_series[bike_theft_series.index.year >= val]
+        #bike_theft_series = bike_theft_series[bike_theft_series.index >= val]
         st.line_chart(bike_theft_series)
+
+    if st.checkbox("<- Click here for checking the categorical variables"):
+        fig, ax = plt.subplots()
+        ax = sns.catplot(
+        data=df, y='ART_DES_FAHRRADS', kind="count",
+        palette="pastel", edgecolor=".6",
+        )
+        st.pyplot(fig);
 
 if nav == "Heat Map":
     st.markdown(
@@ -44,13 +54,16 @@ if nav == "Heat Map":
     """
     )
     
-    if st.checkbox("<- If you are interested to see the initial data made available by the Savings Bank, click here"):
+    if st.checkbox("<- If you are interested to see the initial data made available by \
+                   the Police Department in Berlin, click here"):
         st.table(df_initial)
     
     st.markdown(
     """ ##### For heat map per LOR, please select from one of the following options.
     """
     )
+    district = st.selectbox('Please select which district you are interested in', df_initial['LOR'].unique())
+
 
     # @st.cache
     # def load_model():

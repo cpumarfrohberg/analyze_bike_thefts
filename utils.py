@@ -2,15 +2,21 @@ import pandas as pd
 import seaborn as sns
 #import pytest
 
-PATH = './data/Fahrraddiebstahl.csv' 
-PATH_SAVEABLE = './data'
+PATH_INITIAL = './data/Fahrraddiebstahl.csv' 
+PATH_SAVEABLE = '../data'
+PATH_EXTRACTED = './data'
 
 class BikeThefts():
     '''Read, inspect and transform initial data.'''
 
-    def __init__(self, path = PATH, path_saveable = PATH_SAVEABLE) -> None:
+    def __init__(
+            self, 
+            path = PATH_INITIAL,
+            path_saveable = PATH_SAVEABLE,
+            path_extracted = PATH_EXTRACTED) -> None:
         self.path = path
         self.path_saveable = path_saveable
+        self.path_extracted = path_extracted
 
     def read_initial_data(self) -> pd.DataFrame:
         '''Return DataFrame with feature matrix and labels as values.'''
@@ -19,7 +25,7 @@ class BikeThefts():
 
     def read_extracted_data(self, file) -> pd.DataFrame:
         '''Return DataFrame extracted from initial data.'''
-        df = pd.read_csv(f'{self.path_saveable}/{file}', encoding = 'unicode_escape')
+        df = pd.read_csv(f'{self.path_extracted}/{file}', encoding = 'unicode_escape')
         return df
     
     def check_unique(self, serie) -> pd.Series:
@@ -48,14 +54,14 @@ class BikeThefts():
         df['crime_duration_hours'] = abs(start - end)
         return df
     
-    def plot_categoricals(self, df, ordinate) -> sns:
+    def plot_categoricals(self, df) -> sns:
         return sns.catplot(
-        data=df, y=ordinate, kind="count",
+        data=df, y='ART_DES_FAHRRADS', kind="count",
         palette="pastel", edgecolor=".6",
     )
 
     def save_data(self, df, group_by, col_names):
-        '''Save extracted data locally.'''
+        '''Save extracted data locally as csv-file.'''
         bike_thefts_LOR = pd.DataFrame(df.groupby(group_by).size(),
                         columns = [col_names]).reset_index()
         return bike_thefts_LOR.to_csv(f'{self.path_saveable}/bike_thefts_LOR.csv')
