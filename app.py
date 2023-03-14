@@ -1,66 +1,83 @@
+from utils import BikeThefts
+import time
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 import streamlit as st
 
-from utils import BikeThefts
-
-INDEX = [0]
+CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
 bike_thefts = BikeThefts()
 
 df_initial = bike_thefts.read_initial_data()
-df = bike_thefts.read_extracted_data('bike_thefts_LOR_year.csv')
+df = bike_thefts.read_extracted_data('bike_thefts_transformed.csv')
+bike_thefts_series_22 = bike_thefts.read_extracted_data('bike_thefts_series_2022.csv')
+bike_thefts_series_23 = bike_thefts.read_extracted_data('bike_thefts_series_2023.csv')
 
 st.title('Bike Thefts in Berlin')
 
 nav = st.sidebar.radio(
-    "Please chose one of the following:",
-    ["Home", "EDA", "Heat Map"]
+    'Please chose one of the following:',
+    ['Home', 'EDA', 'Heat Map']
     ) 
 
-if nav == "Home":
+if nav == 'Home':
     st.markdown(
-    """ ## Welcome to the Bike Thefts in Berlin page.
+    ''' ## Welcome to the Bike Thefts in Berlin page.
     ##### Its main objective is to analyze bike thefts in Berlin during the time period 2022-2023.
-    """
+    '''
     )
   
-if nav == "EDA":
-    st.write("Welcome to the section on Exploratory Data Analysis.")
-    if st.checkbox("<- Click here to see the time series of bike thefts."):
+if st.checkbox('<- If you are interested to see the initial data made available by \
+                   the Police Department in Berlin, click here'):
+        st.table(df_initial)
+
+if st.checkbox('<- For checking the transformed data, click here'):
+        st.table(df)
+
+if nav == 'EDA':
+    st.write('Welcome to the section on Exploratory Data Analysis.')
+
+    if st.checkbox('<- Click here to see the type of delicts.'):
+        st.write(bike_thefts.check_unique(df['delict']))
+
+    if st.checkbox('<- Click here to see the time series of bike thefts.'):
         val = st.slider(
-            "Filter data using years", 
+            'Filter data using years', 
             min_value = 2022, 
             max_value = 2023
             )
-        bike_theft_series = df["bike_theft_count"]
+        bike_theft_series = bike_thefts_series_22['bike_theft_count']
         #bike_theft_series = bike_theft_series[bike_theft_series.index >= val]
         st.line_chart(bike_theft_series)
 
-    if st.checkbox("<- Click here for checking the categorical variables"):
-        fig, ax = plt.subplots()
-        ax = sns.catplot(
-        data=df, y='ART_DES_FAHRRADS', kind="count",
-        palette="pastel", edgecolor=".6",
-        )
-        st.pyplot(fig);
 
-if nav == "Heat Map":
+    if st.checkbox('<- Click here for checking the categorical variables'):
+        fillable_plots = list()
+        for cat in CATS:
+            fig, ax = plt.subplots()
+            fig = sns.catplot(
+                    data=df, y= cat, kind='count',
+                    palette='pastel', edgecolor='.6'
+            )
+            fillable_plots.append(fig)
+        for plot in fillable_plots:
+           time.sleep(3)
+           st.pyplot(plot) 
+
+
+if nav == 'Heat Map':
     st.markdown(
-    """ #### Welcome to the heat map page.
-    """
+    ''' #### Welcome to the heat map page.
+    '''
     )
     
-    if st.checkbox("<- If you are interested to see the initial data made available by \
-                   the Police Department in Berlin, click here"):
-        st.table(df_initial)
+    
     
     st.markdown(
-    """ ##### For heat map per LOR, please select from one of the following options.
-    """
+    ''' ##### For heat map per LOR, please select from one of the following options.
+    '''
     )
     district = st.selectbox('Please select which district you are interested in', df_initial['LOR'].unique())
 
