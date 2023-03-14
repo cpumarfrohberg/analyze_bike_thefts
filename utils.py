@@ -79,7 +79,6 @@ class BikeThefts():
     
     def rename_cols(self, df) -> pd.DataFrame:
         return df.rename(columns={
-            'Client_ID' : 'Unique_Frequency', 
             'TATZEIT_ANFANG_DATUM' : 'start_date_delict',
             'TATZEIT_ANFANG_STUNDE' : 'start_time_delict',
             'TATZEIT_ENDE_DATUM' : 'end_date_delict',
