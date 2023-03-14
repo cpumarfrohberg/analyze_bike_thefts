@@ -10,10 +10,15 @@ CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
 bike_thefts = BikeThefts()
 
-df_initial = bike_thefts.read_initial_data()
-df = bike_thefts.read_extracted_data('bike_thefts_transformed.csv')
-bike_thefts_series_22 = bike_thefts.read_extracted_data('bike_thefts_series_2022.csv')
-bike_thefts_series_23 = bike_thefts.read_extracted_data('bike_thefts_series_2023.csv')
+@st.cache
+def load_data():
+    df_initial = bike_thefts.read_initial_data()
+    df = bike_thefts.read_extracted_data('bike_thefts_transformed.csv')
+    bike_thefts_series_22 = bike_thefts.read_extracted_data('bike_thefts_series_2022.csv')
+    bike_thefts_series_23 = bike_thefts.read_extracted_data('bike_thefts_series_2023.csv')
+    return df_initial, df, bike_thefts_series_22, bike_thefts_series_23
+
+df_initial, df, bike_thefts_series_22, bike_thefts_series_23 = load_data()
 
 st.title('Bike Thefts in Berlin')
 
@@ -72,8 +77,6 @@ if nav == 'Heat Map':
     ''' #### Welcome to the heat map page.
     '''
     )
-    
-    
     
     st.markdown(
     ''' ##### For heat map per LOR, please select from one of the following options.
