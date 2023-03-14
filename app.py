@@ -57,7 +57,6 @@ if nav == 'EDA':
         #bike_theft_series = bike_theft_series[bike_theft_series.index >= val]
         st.line_chart(bike_theft_series)
 
-
     if st.checkbox('<- Click here for checking the categorical variables'):
         fillable_plots = list()
         for cat in CATS:
@@ -70,7 +69,6 @@ if nav == 'EDA':
         for plot in fillable_plots:
            time.sleep(3)
            st.pyplot(plot) 
-
 
 if nav == 'Heat Map':
     st.markdown(
