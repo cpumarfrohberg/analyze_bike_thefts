@@ -69,6 +69,8 @@ if nav == 'EDA':
         for plot in fillable_plots:
            time.sleep(3)
            st.pyplot(plot) 
+    
+    if st.checkbox('<- Click here for checking the (pearson) correlation between variables'):
 
 if nav == 'Heat Map':
     st.markdown(
