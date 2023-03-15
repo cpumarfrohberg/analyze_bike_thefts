@@ -5,14 +5,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import streamlit_pandas as sp
 
 CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
 bike_thefts = BikeThefts()
 
-@st.cache
+@st.cache_data
 def load_data():
-    df_initial = bike_thefts.read_initial_data()
+    df_initial = bike_thefts.read_initial_data('Fahrraddiebstahl.csv')
     df = bike_thefts.read_extracted_data('bike_thefts_transformed.csv')
     bike_thefts_series_22 = bike_thefts.read_extracted_data('bike_thefts_series_2022.csv')
     bike_thefts_series_23 = bike_thefts.read_extracted_data('bike_thefts_series_2023.csv')
@@ -24,7 +25,7 @@ st.title('Bike Thefts in Berlin')
 
 nav = st.sidebar.radio(
     'Please chose one of the following:',
-    ['Home', 'EDA', 'Heat Map']
+    ['Home', 'EDA', 'Regional Heat Map']
     ) 
 
 if nav == 'Home':
@@ -34,12 +35,12 @@ if nav == 'Home':
     '''
     )
   
-if st.checkbox('<- If you are interested to see the initial data made available by \
-                   the Police Department in Berlin, click here'):
+    if st.checkbox('<- If you are interested to see the initial data made available by \
+                    the Police Department in Berlin, click here'):
         st.table(df_initial)
 
-if st.checkbox('<- For checking the transformed data, click here'):
-        st.table(df)
+    if st.checkbox('<- For checking the transformed data, click here'):
+        st.table(df) #why doesn't it render it transformed?
 
 if nav == 'EDA':
     st.write('Welcome to the section on Exploratory Data Analysis.')
@@ -57,10 +58,14 @@ if nav == 'EDA':
         #bike_theft_series = bike_theft_series[bike_theft_series.index >= val]
         st.line_chart(bike_theft_series)
 
+    if st.checkbox('<- Click here to see the Mean Values of Monthly Bike Thefts (EUR) - 2022.', key=2):
+        test = bike_thefts_series_22.plot.line()
+        st.write(test)
+
     if st.checkbox('<- Click here for checking the categorical variables'):
         fillable_plots = list()
         for cat in CATS:
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(6, 4))
             fig = sns.catplot(
                     data=df, y= cat, kind='count',
                     palette='pastel', edgecolor='.6'
@@ -71,8 +76,12 @@ if nav == 'EDA':
            st.pyplot(plot) 
     
     if st.checkbox('<- Click here for checking the (pearson) correlation between variables'):
+        corr = df.corr()
+        fig, ax = plt.subplots()
+        sns.heatmap(corr, ax=ax)
+        st.write(fig)
 
-if nav == 'Heat Map':
+if nav == 'Regional Heat Map':
     st.markdown(
     ''' #### Welcome to the heat map page.
     '''
