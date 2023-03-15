@@ -4,26 +4,24 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 #import pytest
 
-PATH_INITIAL = './data/Fahrraddiebstahl.csv' 
-PATH_SAVEABLE = '../data'
-PATH_EXTRACTED = './data'
+PATH = './data' #note difference to notebook, which is in EDA-dir
+
+time_parseable = ['start_date_delict', 'end_date_delict']
 
 class BikeThefts():
     '''Read, inspect and transform initial data.'''
 
-    def __init__(self, path = PATH_INITIAL, path_saveable = PATH_SAVEABLE, path_extracted = PATH_EXTRACTED) -> None:
+    def __init__(self, path = PATH) -> None:
         self.path = path
-        self.path_saveable = path_saveable
-        self.path_extracted = path_extracted
 
-    def read_initial_data(self) -> pd.DataFrame:
+    def read_initial_data(self, file) -> pd.DataFrame:
         '''Return DataFrame with feature matrix and labels as values.'''
-        df = pd.read_csv(self.path, index_col=0, parse_dates=True, encoding = 'unicode_escape')
+        df = pd.read_csv(f'{self.path}/{file}', index_col=0, parse_dates=True, encoding = 'unicode_escape')
         return df
 
     def read_extracted_data(self, file) -> pd.DataFrame:
         '''Return DataFrame extracted from initial data.'''
-        df = pd.read_csv(f'{self.path_extracted}/{file}', encoding = 'unicode_escape')
+        df = pd.read_csv(f'{self.path}/{file}', encoding = 'unicode_escape')
         return df
     
     def check_unique(self, serie) -> pd.Series:
@@ -59,26 +57,14 @@ class BikeThefts():
         return df
     
     def fill_ints_grouped(self, df) -> pd.DataFrame:
-        '''Reencode LOR into 8-digit values.'''
-        df_filled = pd.DataFrame(df.groupby('LOR').size(),
+        '''Group by LOR. Return df including number of bike thefts per LOR-group.'''
+        df_grouped = pd.DataFrame(df.groupby('LOR').size(),
                           columns=['bike_thefts']).reset_index()
-        df_filled['LOR'] = df_filled['LOR'].apply(lambda x: str(x))
-        df_filled['LOR'] = df_filled['LOR'].apply(lambda x: f'0{(x)}'[-8:])
-        return df_filled
-    
-    # def reencode_LOR(self, df, dictionary) -> pd.DataFrame:
-    #     '''Reencode LOR into name of district.'''
-    #     for idx, row in df['LOR'].items():
-    #         for key in dictionary.keys():
-    #             if key in row[0:2]:
-    #                 row = dictionary[key]
-    #             else:
-    #                 continue
-    #         return df
+        return df_grouped
         
-    
     def rename_cols(self, df) -> pd.DataFrame:
-        return df.rename(columns={
+        return df.rename(columns={ 
+            'ANGELEGT_AM' : 'track_date',
             'TATZEIT_ANFANG_DATUM' : 'start_date_delict',
             'TATZEIT_ANFANG_STUNDE' : 'start_time_delict',
             'TATZEIT_ENDE_DATUM' : 'end_date_delict',
@@ -92,15 +78,13 @@ class BikeThefts():
     
     def save_intermediate_data(self, df, file: str):
         '''Save extracted data locally as csv-file.'''
-        return df.to_csv(f'{self.path_saveable}/{file}.csv')
+        return df.to_csv(f'{self.path}/{file}.csv')
 
     def save_LOR_bike_thefts(self, df, group_by: str, col_names: str, file: str):
         '''Save extracted LOR-bike thefts-data locally as csv-file.'''
         bike_thefts_LOR = pd.DataFrame(df.groupby(group_by).size(),
                         columns = [col_names]).reset_index()
-        return bike_thefts_LOR.to_csv(f'{self.path_saveable}/{file}.csv')
-    
-
+        return bike_thefts_LOR.to_csv(f'{self.path}/{file}.csv')
 
     class PlotBikeThefts():
         '''Plot data with seaborn.'''
@@ -119,3 +103,14 @@ class BikeThefts():
         cmap = sns.diverging_palette(230, 20, as_cmap=True)
         return sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
                     square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    
+
+    # def reencode_LOR(self, df, dictionary) -> pd.DataFrame:
+    #     '''Reencode LOR into name of district.'''
+    #     for idx, row in df['LOR'].items():
+    #         for key in dictionary.keys():
+    #             if key in row[0:2]:
+    #                 row = dictionary[key]
+    #             else:
+    #                 continue
+    #         return df
