@@ -14,6 +14,13 @@ This project has the main objective to analyze bike thefts in Berlin, including 
 - create an environment with the contents of the requirements.txt file (if you are using conda: install pip first via "conda install pip" and then "pip install -r requirements.txt")
 - run `streamlit run app.py` on your terminal
 
+## For running the app in a docker container
+- clone repo locally
+- build image with
+`docker build -t streamlitchurnapp:latest -f docker/Dockerfile .`
+- run image with
+`docker run -p 8501:8501 streamlitchurnapp:latest`
+- in your web browser: map your localhost to port 8501 in container
 
 ## Author
 
