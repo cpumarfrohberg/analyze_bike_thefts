@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 
 def main():
     bike_thefts = BikeThefts()
-    df = bike_thefts.read_initial_data('Fahrraddiebstahl.csv')
+    df = bike_thefts.read_data('Fahrraddiebstahl')
     df = bike_thefts.rename_cols(df)
     df_transformed = bike_thefts.time_parser(df, TIME_PARSEABLE)
     df_transformed = bike_thefts.crime_duration_days(df_transformed, 
