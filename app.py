@@ -1,0 +1,115 @@
+from utils import BikeThefts
+import time
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+
+CATS = ['bike_type', 'delict', 'description', 'intent_delict']
+
+bike_thefts = BikeThefts() #TODO: include final methods to be used; develop additional ones for reducing code below
+
+@st.cache_data
+def load_data():
+    bike_thefts_data = bike_thefts.read_data('Fahrraddiebstahl')
+    bike_thefts_transformed = bike_thefts.read_data('bike_thefts_transformed')
+    return bike_thefts_data, bike_thefts_transformed
+
+bike_thefts_data, bike_thefts_transformed = load_data()
+
+st.title('Bike Thefts in Berlin')
+
+nav = st.sidebar.radio(
+    'Please chose one of the following:',
+    ['Home', 'Categorical Variables', 'Numeric Variables', 'Time Series', 'Heat Maps']
+    ) 
+
+if nav == 'Home':
+    st.markdown(
+    ''' ## Welcome to the Bike Thefts in Berlin page.
+    ##### Its main objective is to analyze bike thefts in Berlin during the time period 2022-2023.
+    '''
+    )
+  
+    if st.checkbox('<- If you are interested to see the initial data made available by \
+                    the Police Department in Berlin, click here'):
+            st.table(bike_thefts_data)
+
+    if st.checkbox('<- For checking the transformed data, click here'):
+            st.table(bike_thefts_transformed)
+
+if nav == 'Categorical Variables':
+    st.write('Welcome to the section on Categorical Variables.')
+    if st.checkbox('<- Click here to see the type of delicts.'):
+        st.write(bike_thefts.check_unique(bike_thefts_transformed['delict']))
+    if st.checkbox('<- Click here for plots on categorical variables'):
+        fillable_plots = list()
+        for cat in CATS:
+            fig, ax = plt.subplots(figsize = (5,3))
+            fig = sns.catplot(
+                    data=bike_thefts_transformed, y= cat, kind='count',
+                    palette='pastel', edgecolor='.6'
+            )
+            fillable_plots.append(fig)
+        for plot in fillable_plots:
+           time.sleep(3)
+           st.pyplot(plot) 
+    
+if nav == 'Numeric Variables':
+    st.write('Welcome to the section on Numeric Variables.')
+    if st.checkbox('<- Click here for checking a box plot'):
+        multi_biketype_month = bike_thefts_transformed.groupby(['bike_type', 'year'])['damage_amount'].mean()
+        multi_biketype_month = multi_biketype_month.unstack().round(2)
+        multi_biketype_month = multi_biketype_month.reset_index()
+        multi_biketype_month_long = multi_biketype_month.melt(id_vars='bike_type', var_name='year', value_name='bike_thefts')
+        fig, ax = plt.subplots(figsize = (5,3))
+        sns.boxplot(x='year', y='bike_thefts', data=multi_biketype_month_long)
+        st.pyplot(fig)
+
+    if st.checkbox('<- Click here for checking a bar chart'):
+        monthly_average_thefts = bike_thefts.thefts_count(bike_thefts_transformed, 'month')
+        monthly_average_thefts.drop('month', axis=1, inplace=True) 
+        st.bar_chart(monthly_average_thefts)
+
+if nav == 'Time Series':
+    st.write('Welcome to the section on Time Series.')
+
+    if st.checkbox('<- Click here to see the daily values of bike thefts.'):
+        bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('D').size()
+        st.line_chart(bike_theft_series) 
+    
+    if st.checkbox('<- Click here to see the weekly values of bike thefts.'):
+        bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('W').size()
+        st.line_chart(bike_theft_series) 
+
+    if st.checkbox('<- Click here to see the monthly values of bike thefts.'):
+        bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('M').size()
+        st.line_chart(bike_theft_series) 
+
+    if st.checkbox('<- Click here to see the monthly mean of selected aggregation variable.'):
+        schadenshoehe_monthly_mean = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
+        st.bar_chart(schadenshoehe_monthly_mean) #TODO; check why it's not rendering anything...
+
+if nav == 'Heat Maps':
+    st.markdown(
+    ''' #### Welcome to the heat map page.
+    '''
+    )
+    if st.checkbox('Click here to see the how variables are correlated with each other (pearson).'):
+        corr = bike_thefts_transformed.corr()
+        fig, ax = plt.subplots()
+        sns.heatmap(corr, ax=ax)
+        st.write(fig)
+    
+   
+   
+    st.markdown(
+    ''' ##### For heat map per LOR, please select from one of the following options.
+    '''
+    )
+    district = st.selectbox('Please select which district you are interested in', bike_thefts_transformed['LOR'].unique())
+
+    if st.button("End"):
+        st.success(f'Thank you for your interest and for stopping by.')
+
