@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import pydeck as pdk
 
 CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
@@ -96,6 +97,7 @@ if nav == 'Heat Maps':
     ''' #### Welcome to the heat map page.
     '''
     )
+      
     if st.checkbox('Click here to see the how variables are correlated with each other (pearson).'):
         corr = bike_thefts_transformed.corr()
         fig, ax = plt.subplots()
@@ -103,12 +105,39 @@ if nav == 'Heat Maps':
         st.write(fig)
     
    
+    # if st.checkbox('Click here to see the how variables are correlated with each other (pearson).'):
+    #     layer = pdk.Layer(
+    #     'ScatterplotLayer',
+    #     data=bike_thefts_transformed,
+    #     get_position='[lon, lat]',
+    #     get_color='[200, 30, 0, 160]',
+    #     get_radius=1000,
+    # )
+
+    # view_state = pdk.ViewState(
+    #     longitude=-122.41669,
+    #     latitude=37.7853,
+    #     zoom=11,
+    #     pitch=50,
+    # )
+
+    # map = pdk.Deck(
+    #     layers=[layer],
+    #     initial_view_state=view_state,
+    #     tooltip={"text": "{name}\n{address}"}
+    # )
+
+
+
+
    
     st.markdown(
     ''' ##### For heat map per LOR, please select from one of the following options.
     '''
     )
-    district = st.selectbox('Please select which district you are interested in', bike_thefts_transformed['LOR'].unique())
+    
+    
+    #district = st.selectbox('Please select which district you are interested in', bike_thefts_transformed['LOR'].unique())
 
     if st.button("End"):
         st.success(f'Thank you for your interest and for stopping by.')
