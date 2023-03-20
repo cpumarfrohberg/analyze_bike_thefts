@@ -1,3 +1,5 @@
+#app.py
+
 from utils import BikeThefts
 import time
 import pandas as pd
@@ -105,40 +107,37 @@ if nav == 'Heat Maps':
         st.write(fig)
     
    
-    # if st.checkbox('Click here to see the how variables are correlated with each other (pearson).'):
-    #     layer = pdk.Layer(
-    #     'ScatterplotLayer',
-    #     data=bike_thefts_transformed,
-    #     get_position='[lon, lat]',
-    #     get_color='[200, 30, 0, 160]',
-    #     get_radius=1000,
-    # )
-
-    # view_state = pdk.ViewState(
-    #     longitude=-122.41669,
-    #     latitude=37.7853,
-    #     zoom=11,
-    #     pitch=50,
-    # )
-
-    # map = pdk.Deck(
-    #     layers=[layer],
-    #     initial_view_state=view_state,
-    #     tooltip={"text": "{name}\n{address}"}
-    # )
-
-
-
-
-   
-    st.markdown(
-    ''' ##### For heat map per LOR, please select from one of the following options.
-    '''
+    if st.checkbox('Click here to see geodata being plotted.'):
+        layer = pdk.Layer(
+        'ScatterplotLayer',
+        data=bike_thefts_transformed,
+        get_position='[lon, lat]',
+        get_color='[200, 30, 0, 160]',
+        get_radius=1000,
     )
-    
-    
-    #district = st.selectbox('Please select which district you are interested in', bike_thefts_transformed['LOR'].unique())
 
-    if st.button("End"):
-        st.success(f'Thank you for your interest and for stopping by.')
+    view_state = pdk.ViewState(
+        longitude=13.4,
+        latitude=52.5,
+        zoom=11,
+        pitch=50
+    )
+
+    map = pdk.Deck(
+        layers=[layer],
+        initial_view_state=view_state,
+    )
+   
+    st.pydeck_chart(map)
+
+    # st.markdown(
+    # ''' ##### For heat map per LOR, please select from one of the following options.
+    # '''
+    # )
+    
+    
+    # #district = st.selectbox('Please select which district you are interested in', bike_thefts_transformed['LOR'].unique())
+
+    # if st.button("End"):
+    #     st.success(f'Thank you for your interest and for stopping by.')
 

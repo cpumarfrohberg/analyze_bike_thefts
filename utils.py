@@ -1,11 +1,12 @@
+#utils.py
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 #import pytest
 
-#TODO; import type hints from refactor
-#TODO; clarify what .mean_thefts() does
+#TODO; make .mean_thefts() run!
 
 PATH = './data'
 
