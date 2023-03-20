@@ -6,9 +6,23 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 #import pytest
 
-#TODO; make .mean_thefts() run!
 
 PATH = './data'
+
+DISTRICT_DICT = {
+    '01': 'Mitte',
+    '02': 'Friedrichshain-Kreuzberg',
+    '03': 'Pankow',
+    '04': 'Charlottenburg-Wilmersdorf',
+    '05': 'Spandau',
+    '06': 'Steglitz-Zehlendorf',
+    '07': 'Tempelhof-Schöneberg',
+    '08': 'Neukölln',
+    '09': 'Treptow-Köpenick',
+    '10': 'Marzahn-Hellersdorf',
+    '11': 'Lichtenberg',
+    '12': 'Reinickendorf',
+    }
 
 TIME_PARSEABLE = ['start_date_delict', 'end_date_delict', 'start_time_delict', 'end_time_delict']
 
@@ -63,9 +77,24 @@ class BikeThefts():
         '''Calculate average thefts per time-frequency.'''
         df_filled = pd.DataFrame(df.groupby(frequency).size(),
                           columns=[f'{frequency}_thefts_count']).reset_index()
-        return df_filled
+        return df_filled #check if you want to keep it
     
-    def mean_thefts(df: pd.DataFrame, group_variable:str, aggregate_variable:str) -> pd.DataFrame:
+    def insert_district(self, df, dictionary):
+        '''Iterate thru rows of LOR-column and parse values into district names.
+        Insert district names into a new column, "districts".'''
+        for idx,row in df.loc[:, ['LOR']].iterrows():
+            lor_as_string = str(row[0])
+            if len(lor_as_string) < 8:
+                lor_as_string = "0"+lor_as_string
+            starting_letters=lor_as_string[0:2]
+            if starting_letters in dictionary:
+                #print (f'found: {starting_letters}', dictionary[starting_letters])
+                df.loc[idx, 'district'] = dictionary[starting_letters]
+            else:
+                continue
+        return df
+   
+    def mean_thefts(self, df: pd.DataFrame, group_variable:str, aggregate_variable:str) -> pd.DataFrame:
         '''Calculate average thefts per group_variable and aggregate_variable.'''
         df_filled = df.groupby(group_variable)[aggregate_variable].mean()
         df_filled = pd.DataFrame(df_filled).reset_index().sort_values(by = 'damage_amount', ascending=False)
