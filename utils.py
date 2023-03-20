@@ -65,10 +65,10 @@ class BikeThefts():
                           columns=[f'{frequency}_thefts_count']).reset_index()
         return df_filled
     
-    def mean_thefts(self, df: pd.DataFrame, group_variable:str, aggregate_variable:str) -> pd.DataFrame:
+    def mean_thefts(df: pd.DataFrame, group_variable:str, aggregate_variable:str) -> pd.DataFrame:
         '''Calculate average thefts per group_variable and aggregate_variable.'''
-        df_filled = pd.DataFrame(df.groupby(group_variable)[aggregate_variable].mean(),
-                          columns=[f'{aggregate_variable}_average_thefts']).reset_index()
+        df_filled = df.groupby(group_variable)[aggregate_variable].mean()
+        df_filled = pd.DataFrame(df_filled).reset_index().sort_values(by = 'damage_amount', ascending=False)
         return df_filled
       
     def rename_cols(self, df: pd.DataFrame) -> pd.DataFrame:

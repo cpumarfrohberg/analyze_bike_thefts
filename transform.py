@@ -21,8 +21,9 @@ def main():
                                             end = df_transformed['end_time_delict'])
     df_transformed = bike_thefts.include_timestamps(df_transformed)
     df_transformed = bike_thefts.fill_ints(df_transformed)
+    mean_damage_amount = bike_thefts.mean_thefts(df_transformed, 'bike_type', 'damage_amount')
     bike_thefts.save_intermediate_data(df_transformed, 'bike_thefts_transformed') # save complete transformed dataset
+    bike_thefts.save_intermediate_data(mean_damage_amount, 'mean_damage_amount') # save grouped vals for plotting
     
-
 if __name__ == '__main__':
     main()

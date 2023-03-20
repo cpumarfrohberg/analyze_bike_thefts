@@ -71,9 +71,8 @@ if nav == 'Numeric Variables':
         st.pyplot(fig)
 
     if st.checkbox('<- Click here for checking a bar chart'):
-        monthly_average_thefts = bike_thefts.thefts_count(bike_thefts_transformed, 'month')
-        monthly_average_thefts.drop('month', axis=1, inplace=True) 
-        st.bar_chart(monthly_average_thefts)
+        mean_damage_amount = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
+        st.bar_chart(mean_damage_amount)
 
 if nav == 'Time Series':
     st.write('Welcome to the section on Time Series.')
