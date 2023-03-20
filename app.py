@@ -123,12 +123,12 @@ if nav == 'Heat Maps':
         pitch=50
     )
 
-    map = pdk.Deck(
-        layers=[layer],
-        initial_view_state=view_state,
-    )
+    # map = pdk.Deck(
+    #     layers=[layer],
+    #     initial_view_state=view_state,
+    # )
    
-    st.pydeck_chart(map)
+    # st.pydeck_chart(map)
 
     # st.markdown(
     # ''' ##### For heat map per LOR, please select from one of the following options.
