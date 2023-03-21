@@ -13,13 +13,13 @@ CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
 bike_thefts = BikeThefts() #TODO: include final methods to be used; develop additional ones for reducing code below
 
-#@st.cache_data
-#def load_data():
-bike_thefts_data = bike_thefts.read_data('Fahrraddiebstahl')
-bike_thefts_transformed = bike_thefts.read_data('bike_thefts_transformed')
-#    return bike_thefts_data, bike_thefts_transformed
+@st.cache_data
+def load_data():
+    bike_thefts_data = bike_thefts.read_data('Fahrraddiebstahl')
+    bike_thefts_transformed = bike_thefts.read_data('bike_thefts_transformed')
+    return bike_thefts_data, bike_thefts_transformed
 
-#bike_thefts_data, bike_thefts_transformed = load_data()
+bike_thefts_data, bike_thefts_transformed = load_data()
 
 st.title('Bike Thefts in Berlin')
 
@@ -72,7 +72,7 @@ if nav == 'Numeric Variables':
 
     if st.checkbox('<- Click here for checking a bar chart'):
         mean_damage_amount = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-        st.bar_chart(mean_damage_amount) #CHECK!
+        st.bar_chart(mean_damage_amount)
 
 if nav == 'Time Series':
     st.write('Welcome to the section on Time Series.')
@@ -88,14 +88,10 @@ if nav == 'Time Series':
     if st.checkbox('<- Click here to see the monthly values of bike thefts.'):
         bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('M').size()
         st.line_chart(bike_theft_series) 
-
+    
     # if st.checkbox('<- Click here to see the monthly mean of selected aggregation variable.'):
     #     schadenshoehe_monthly_mean = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
     #     st.bar_chart(schadenshoehe_monthly_mean) #TODO; check why it's not rendering anything...
-    
-    if st.checkbox('<- Click here to see the monthly mean of selected aggregation variable.'):
-        schadenshoehe_monthly_mean = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-        st.bar_chart(schadenshoehe_monthly_mean) #TODO; check why it's not rendering anything...
 
 if nav == 'Heat Maps':
     st.markdown(
