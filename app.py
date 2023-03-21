@@ -44,8 +44,6 @@ if nav == 'Home':
 
 if nav == 'Categorical Variables':
     st.write('Welcome to the section on Categorical Variables.')
-    if st.checkbox('<- Click here to see the type of delicts.'):
-        st.write(bike_thefts.check_unique(bike_thefts_transformed['delict']))
     if st.checkbox('<- Click here for plots on categorical variables'):
         fillable_plots = list()
         for cat in CATS:
@@ -70,9 +68,9 @@ if nav == 'Numeric Variables':
         sns.boxplot(x='year', y='bike_thefts', data=multi_biketype_month_long)
         st.pyplot(fig)
 
-    if st.checkbox('<- Click here for checking a bar chart'):
-        mean_damage_amount = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-        st.bar_chart(mean_damage_amount)
+    # if st.checkbox('<- Click here for checking a bar chart'):
+    #     mean_damage_amount = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
+    #     st.bar_chart(mean_damage_amount)
 
 if nav == 'Time Series':
     st.write('Welcome to the section on Time Series.')
