@@ -11,7 +11,7 @@ import pydeck as pdk
 
 CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
-bike_thefts = BikeThefts() #TODO: include final methods to be used; develop additional ones for reducing code below
+bike_thefts = BikeThefts()
 
 @st.cache_data
 def load_data():
@@ -88,10 +88,6 @@ if nav == 'Time Series':
     if st.checkbox('<- Click here to see the monthly values of bike thefts.'):
         bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('M').size()
         st.line_chart(bike_theft_series) 
-    
-    # if st.checkbox('<- Click here to see the monthly mean of selected aggregation variable.'):
-    #     schadenshoehe_monthly_mean = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-    #     st.bar_chart(schadenshoehe_monthly_mean) #TODO; check why it's not rendering anything...
 
 if nav == 'Heat Maps':
     st.markdown(
@@ -121,22 +117,4 @@ if nav == 'Heat Maps':
         zoom=11,
         pitch=50
     )
-
-    # map = pdk.Deck(
-    #     layers=[layer],
-    #     initial_view_state=view_state,
-    # )
-   
-    # st.pydeck_chart(map)
-
-    # st.markdown(
-    # ''' ##### For heat map per LOR, please select from one of the following options.
-    # '''
-    # )
-    
-    
-    # #district = st.selectbox('Please select which district you are interested in', bike_thefts_transformed['LOR'].unique())
-
-    # if st.button("End"):
-    #     st.success(f'Thank you for your interest and for stopping by.')
 
