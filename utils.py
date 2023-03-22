@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-#import pytest
 
 
 PATH = './data'
@@ -36,10 +35,6 @@ class BikeThefts():
         '''Return DataFrame with feature matrix and labels as values.'''
         df = pd.read_csv(f'{self.path}/{file}.csv', index_col=0, parse_dates=True, encoding = 'unicode_escape')
         return df
-    
-    def check_unique(self, series: pd.Series) -> pd.Series:
-        '''Return unique values of selected columns.'''
-        return series.unique()
 
     def include_timestamps(self, df: pd.DataFrame) -> pd.DataFrame:
         '''Return DataFrame with time-stamps.'''
@@ -56,28 +51,11 @@ class BikeThefts():
         for col in time_parsables:
             df[col] = pd.to_datetime(df[col])
         return df
-
-    def crime_duration_days(self, df: pd.DataFrame, start, end) -> pd.DataFrame: #use for plotting?
-        '''Calculate duration of crime in days.'''
-        df['crime_duration_days'] = end - start
-        return df #check if you want to keep it 
     
-    def crime_duration_hours(self, df: pd.DataFrame, start, end) -> pd.DataFrame: #use for plotting?
+    def crime_duration_minutes(self, df: pd.DataFrame, start_time: pd.Series, end_time: pd.Series) -> pd.DataFrame:
         '''Calculate duration of crime in hours.'''
-        df['crime_duration_hours'] = abs(start - end)
-        return df #check if you want to keep it 
-    
-    def fill_ints(self, df: pd.DataFrame) -> pd.DataFrame:
-        '''Reencode LOR into 8-digit values.'''
-        df['LOR'] = df['LOR'].apply(lambda x: str(x))
-        df['LOR'] = df['LOR'].apply(lambda x: f'0{(x)}'[-8:])
-        return df
-
-    def thefts_count(self, df: pd.DataFrame, frequency:str) -> pd.DataFrame:
-        '''Calculate average thefts per time-frequency.'''
-        df_filled = pd.DataFrame(df.groupby(frequency).size(),
-                          columns=[f'{frequency}_thefts_count']).reset_index()
-        return df_filled #check if you want to keep it
+        df['time_diff'] = end_time.sub(start_time).dt.total_seconds().div(60)
+        return df 
     
     def insert_district(self, df, dictionary):
         '''Iterate thru rows of LOR-column and parse values into district names.
@@ -88,17 +66,10 @@ class BikeThefts():
                 lor_as_string = "0"+lor_as_string
             starting_letters=lor_as_string[0:2]
             if starting_letters in dictionary:
-                #print (f'found: {starting_letters}', dictionary[starting_letters])
                 df.loc[idx, 'district'] = dictionary[starting_letters]
             else:
                 continue
         return df
-   
-    def mean_thefts(self, df: pd.DataFrame, group_variable:str, aggregate_variable:str) -> pd.DataFrame:
-        '''Calculate average thefts per group_variable and aggregate_variable.'''
-        df_filled = df.groupby(group_variable)[aggregate_variable].mean()
-        df_filled = pd.DataFrame(df_filled).reset_index().sort_values(by = 'damage_amount', ascending=False)
-        return df_filled
       
     def rename_cols(self, df: pd.DataFrame) -> pd.DataFrame:
         return df.rename(columns={ 
@@ -117,11 +88,4 @@ class BikeThefts():
     def save_intermediate_data(self, df: pd.DataFrame, file: str):
         '''Save extracted data locally as csv-file.'''
         return df.to_csv(f'{self.path}/{file}.csv')
-
-    def save_LOR_bike_thefts(self, df, group_by: str, col_names: str, file: str):
-        '''Save extracted LOR-bike thefts-data locally as csv-file.'''
-        bike_thefts_LOR = pd.DataFrame(df.groupby(group_by).size(),
-                        columns = [col_names]).reset_index()
-        return bike_thefts_LOR.to_csv(f'{self.path}/{file}.csv') #necessary?
     
-    #TODO; include class for plotting time series?
