@@ -4,7 +4,7 @@ This project has the main objective to analyze bike thefts in Berlin, including 
 
 ## Content of the project
 * 1. data directory
-* 2. `utils.py`: define class `BikeThefts()`for data transformation
+* 2. `utils.py`: define classes for data transformation and plotting
 * 3. `app.py` (`streamlit` app)
 * 4. `transform.py`: transform data for running analysis 
 * 4. `requirements.txt`
