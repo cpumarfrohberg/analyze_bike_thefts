@@ -11,15 +11,15 @@ import pydeck as pdk
 
 CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
-bike_thefts = BikeThefts() #TODO: include final methods to be used; develop additional ones for reducing code below
+bike_thefts = BikeThefts()
 
-#@st.cache_data
-#def load_data():
-bike_thefts_data = bike_thefts.read_data('Fahrraddiebstahl')
-bike_thefts_transformed = bike_thefts.read_data('bike_thefts_transformed')
-#    return bike_thefts_data, bike_thefts_transformed
+@st.cache_data
+def load_data():
+    bike_thefts_data = bike_thefts.read_data('Fahrraddiebstahl')
+    bike_thefts_transformed = bike_thefts.read_data('bike_thefts_transformed')
+    return bike_thefts_data, bike_thefts_transformed
 
-#bike_thefts_data, bike_thefts_transformed = load_data()
+bike_thefts_data, bike_thefts_transformed = load_data()
 
 st.title('Bike Thefts in Berlin')
 
@@ -44,8 +44,6 @@ if nav == 'Home':
 
 if nav == 'Categorical Variables':
     st.write('Welcome to the section on Categorical Variables.')
-    if st.checkbox('<- Click here to see the type of delicts.'):
-        st.write(bike_thefts.check_unique(bike_thefts_transformed['delict']))
     if st.checkbox('<- Click here for plots on categorical variables'):
         fillable_plots = list()
         for cat in CATS:
@@ -72,7 +70,7 @@ if nav == 'Numeric Variables':
 
     if st.checkbox('<- Click here for checking a bar chart'):
         mean_damage_amount = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-        st.bar_chart(mean_damage_amount) #CHECK!
+        st.bar_chart(mean_damage_amount)
 
 if nav == 'Time Series':
     st.write('Welcome to the section on Time Series.')

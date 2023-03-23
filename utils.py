@@ -89,3 +89,17 @@ class BikeThefts():
         '''Save extracted data locally as csv-file.'''
         return df.to_csv(f'{self.path}/{file}.csv')
     
+class AggregateThefts():
+        '''Analyze data by aggregating by different vals.'''
+        
+        def aggregate_thefts(self, df: pd.DataFrame, group_variable:str) -> pd.DataFrame:
+                '''Calculate aggregated vals per group variable and aggregation variable.'''
+                df_filled = df.groupby([group_variable]).size()
+                df_filled = pd.DataFrame(df_filled).reset_index()
+                return df_filled
+        
+        def mean_vals(self, df: pd.DataFrame, group_variable:str, aggregate_variable:str) -> pd.DataFrame:
+                '''Calculate mean vals per group variable and aggregation variable.'''
+                df_filled = df.groupby([group_variable])[aggregate_variable].mean()
+                df_filled = pd.DataFrame(df_filled).reset_index().sort_values(by = aggregate_variable, ascending=False)
+                return df_filled
