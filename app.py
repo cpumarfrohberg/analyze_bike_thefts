@@ -1,6 +1,6 @@
 #app.py
 
-from utils import BikeThefts
+from utils import BikeThefts, AggregateThefts
 import time
 import pandas as pd
 import numpy as np
@@ -12,6 +12,7 @@ import pydeck as pdk
 CATS = ['bike_type', 'delict', 'description', 'intent_delict']
 
 bike_thefts = BikeThefts()
+aggregated_bike_thefts = AggregateThefts()
 
 @st.cache_data
 def load_data():
@@ -68,9 +69,18 @@ if nav == 'Numeric Variables':
         sns.boxplot(x='year', y='bike_thefts', data=multi_biketype_month_long)
         st.pyplot(fig)
 
-    if st.checkbox('<- Click here for checking a bar chart'):
-        mean_damage_amount = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-        st.bar_chart(mean_damage_amount)
+    if st.checkbox('<- Click here for seeing the mean damage amount district'):
+        mean_damage_by_district = aggregated_bike_thefts.mean_vals(bike_thefts_transformed, 'district', 'damage_amount')
+        mean_damage_by_district = round(mean_damage_by_district, 0)
+        mean_damage_by_district.set_index('district', inplace = True)
+        st.bar_chart(mean_damage_by_district)
+    
+    if st.checkbox('<- Click here for seeing the number of bike thefts by district'):
+        thefts_by_district = aggregated_bike_thefts.aggregate_thefts(bike_thefts_transformed, 'district')
+        thefts_by_district.rename(columns={0:'number_bike_thefts'}, inplace=True)
+        thefts_by_district.set_index('district', inplace=True)
+        thefts_by_district.sort_values(by = 'number_bike_thefts', ascending=False, inplace=True)
+        st.bar_chart(thefts_by_district)
 
 if nav == 'Time Series':
     st.write('Welcome to the section on Time Series.')
@@ -82,18 +92,6 @@ if nav == 'Time Series':
     if st.checkbox('<- Click here to see the weekly values of bike thefts.'):
         bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('W').size()
         st.line_chart(bike_theft_series) 
-
-    if st.checkbox('<- Click here to see the monthly values of bike thefts.'):
-        bike_theft_series = bike_thefts_transformed.loc['2022-01-02':'2023-02-19'].resample('M').size()
-        st.line_chart(bike_theft_series) 
-
-    # if st.checkbox('<- Click here to see the monthly mean of selected aggregation variable.'):
-    #     schadenshoehe_monthly_mean = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-    #     st.bar_chart(schadenshoehe_monthly_mean) #TODO; check why it's not rendering anything...
-    
-    if st.checkbox('<- Click here to see the monthly mean of selected aggregation variable.'):
-        schadenshoehe_monthly_mean = bike_thefts.mean_thefts(bike_thefts_transformed, 'bike_type', 'damage_amount')
-        st.bar_chart(schadenshoehe_monthly_mean) #TODO; check why it's not rendering anything...
 
 if nav == 'Heat Maps':
     st.markdown(
