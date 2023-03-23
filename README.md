@@ -1,6 +1,6 @@
 <h1 align="center">Analyze bike thefts in Berlin.</h1>
 <p align="center">Project Description</p>
-This project has the main objective to analyze bike thefts in Berlin, including an example dashboard of what a later deployment could look like. 
+This project has the main objective to analyze bike thefts in Berlin, including an example dashboard of what a later deployment could look like. It includes data reported by the Berlin Police Department here: https://www.internetwache-polizei-berlin.de/vdb/Fahrraddiebstahl.csv and spans over the time period between January first 2022 and February 19th, 2023.
 
 ## Content of the project
 * 1. data directory
@@ -9,11 +9,11 @@ This project has the main objective to analyze bike thefts in Berlin, including 
 * 4. `transform.py`: transform data for running analysis 
 * 4. `requirements.txt`
 
-## For running the models locally in designated environment
+## For running the analysis in designated environment
 - clone repo locally
 - run `transform.py`for transforming data and using transformed data for example dashboard
 - create an environment with the contents of the requirements.txt file (if you are using conda: install pip first via "conda install pip" and then "pip install -r requirements.txt")
-- run `streamlit run app.py`
+- run `streamlit run app.py` for seeing an example dashboard for the analysis.
 
 ## For running the app in a docker container
 - clone repo locally
