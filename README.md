@@ -24,11 +24,11 @@ This project has the main objective to analyze bike thefts in Berlin, including 
 - in your web browser: map your localhost to port 8501 in container
 
 ## Next steps
-[] extract population data for each district and concatenate it with current version of transformed data in order to normalize bike thefts' counts
-[] plot data with interactive map
-[] extract weather data in order concatenate it with current version of transformed data
-[] predict number of bike thefts with an ensemble model
-[] forecast number of bike thefts with time series (e.g. `AR`) model
+- [ ] extract population data for each district and concatenate it with current version of transformed data in order to normalize bike thefts' counts
+- [ ] plot data with interactive map
+- [ ] extract weather data in order concatenate it with current version of transformed data
+- [ ] predict number of bike thefts with an ensemble model
+- [ ] forecast number of bike thefts with time series (e.g. `AR`) model
 
 ## Author
 
