@@ -29,6 +29,7 @@ This project has the main objective to analyze bike thefts in Berlin, including 
 - [ ] extract weather data in order concatenate it with current version of transformed data
 - [ ] predict number of bike thefts with an ensemble model
 - [ ] forecast number of bike thefts with time series (e.g. `AR`) model
+- [ ] predict number of bike thefts with ensemble method (e.g. `RandomForest`) model
 
 ## Author
 
